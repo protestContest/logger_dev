@@ -6,7 +6,7 @@ defmodule LoggerDev.MixProject do
       app: :logger_dev,
       description: "A more readable formatter for Logger.Backends.Console",
       version: "0.1.0",
-      elixir: "~> 1.14",
+      elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),
@@ -23,7 +23,9 @@ defmodule LoggerDev.MixProject do
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
-    []
+    [
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+    ]
   end
 
   defp package() do
