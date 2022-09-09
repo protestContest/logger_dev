@@ -83,10 +83,27 @@ defmodule LoggerDev.Formatter do
   defp color_str(_level, nil), do: ""
 
   @red_colors [9, 124, 160, 161, 196, 197, 198]
+  @light_colors [15, 159, 194, 195, 229, 230, 231, 247, 248, 249, 250, 251, 252, 253, 254, 255]
+  @dark_colors [0, 16, 17, 18, 52, 53, 88, 232, 233, 234, 235, 236, 237, 238, 239, 240]
   defp color_str(_level, module) do
+    background = Application.get_env(:logger_dev, :background, :dark)
+    colors = Application.get_env(:logger_dev, :colors)
+
+    avoid_colors =
+      case background do
+        :light -> @light_colors ++ @red_colors
+        _ -> @dark_colors ++ @red_colors
+      end
+
     module.__info__(:md5)
     |> :binary.bin_to_list()
-    |> Enum.find(0, fn byte -> if byte not in @red_colors, do: byte end)
+    |> Enum.find(7, fn byte ->
+      cond do
+        colors != nil and byte in colors -> byte
+        colors == nil and byte not in avoid_colors -> byte
+        true -> nil
+      end
+    end)
     |> IO.ANSI.color()
   end
 
